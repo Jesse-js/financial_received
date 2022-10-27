@@ -17,5 +17,11 @@ class ReceivableRepository {
         });
     })
   };
+
+  public deleteReceivable = async ( receivable_id: Number) => {
+    db.transaction( async (trx: any) => {
+      await trx('receivable').where('entry_id', receivable_id).del();
+    });
+  };
 }
 export { ReceivableRepository };
