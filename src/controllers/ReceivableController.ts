@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ReceivableRepository } from "../repositories/ReceivableRepository";
+import dayjs from "dayjs";
 class ReceivableController {
   public insertReceivable = async (request: Request, response: Response) => {
     try {
@@ -23,11 +24,26 @@ class ReceivableController {
       });
     }
   };
+  public getReceivables = async (request: Request, response: Response) => {
+    try {
+      const receivable = new ReceivableRepository();
+      const date_begin: Date = new Date(String(request.query["date_begin"]));
+      const date_end: Date = new Date(String(request.query["date_end"]));
+      const results = await receivable.getReceivable(date_begin, date_end);
+      return response.json(results);
+    } catch (error) {
+      return response.status(500).json({
+        status: 500,
+        message: "Internal server error!",
+      });
+    }
+  };
   public deleteReceivable = async (request: Request, response: Response) => {
     try {
       const receivable = new ReceivableRepository();
       const { entry_id } = request.body;
-      if(entry_id == undefined || entry_id == null) throw new Error('An paramater is missing!');
+      if (entry_id == undefined || entry_id == null)
+        throw new Error("An paramater is missing!");
       await receivable.deleteReceivable(entry_id);
       return response.status(200).json({
         status: 200,
