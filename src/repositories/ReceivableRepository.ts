@@ -37,5 +37,24 @@ class ReceivableRepository {
         dayjs(receivable_date_end).format("YYYY-MM-DD"),
       ]);
   };
+
+  public updateReceivable = async (
+    receivable_id: Number,
+    receivable_description: String,
+    receivable_category: String,
+    receivable_value: Number,
+    receivable_date: Date
+  ) => {
+    return await db.transaction(async (trx: any) => {
+      await trx("receivable")
+        .where("entry_id", receivable_id)
+        .update({
+          entry_description: receivable_description,
+          entry_category: receivable_category,
+          entry_value: receivable_value,
+          entry_date: dayjs(receivable_date).format("YYYY-MM-DD"),
+        });
+    });
+  };
 }
 export { ReceivableRepository };

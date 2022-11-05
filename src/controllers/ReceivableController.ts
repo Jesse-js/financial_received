@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { request, Request, Response } from "express";
 import { ReceivableRepository } from "../repositories/ReceivableRepository";
 import dayjs from "dayjs";
 class ReceivableController {
@@ -48,6 +48,37 @@ class ReceivableController {
       return response.status(200).json({
         status: 200,
         message: "Entry deleted with sucess!",
+      });
+    } catch (error) {
+      return response.status(500).json({
+        status: 500,
+        message: "Internal server error!",
+      });
+    }
+  };
+
+  public updateReceivable = async (request: Request, response: Response) => {
+    try {
+      const receivable = new ReceivableRepository();
+      const {
+        entry_id,
+        entry_description,
+        entry_category,
+        entry_value,
+        entry_date,
+      } = request.body;
+      if (entry_id == undefined || entry_id == null)
+        throw new Error("An paramater is missing!");
+      await receivable.updateReceivable(
+        entry_id,
+        entry_description,
+        entry_category,
+        entry_value,
+        entry_date
+      );
+      return response.status(200).json({
+        status: 200,
+        message: "Entry updated with sucess!",
       });
     } catch (error) {
       return response.status(500).json({
